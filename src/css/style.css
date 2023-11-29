@@ -23,5 +23,30 @@ a {
 
 body {
   margin: 0;
-  /* background-image: url(../assets/images/sleep-cat.jpeg); */
+  background-color: rgb(17, 17, 32);
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.select {
+  width: 200px;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: flex;
+}
+
+.container__img {
+  width: 200px;
+  height: 200px;
 }
