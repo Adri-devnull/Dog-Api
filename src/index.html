@@ -12,19 +12,23 @@
 
 <body>
   <main class="main">
-    <div class="container" id="container">
+    <div class="container__selects" id="container">
+      <label for="breedList" class="label">Razas de perros</label>
       <select name="" id="breedList" class="select"></select>
+      <label for="subBreedList" class="label hide" id="label-subbreed">Subrazas de perros</label>
       <select name="" id="subBreedList" class="select hide"></select>
     </div>
-    <button id="button" class="button">Random Dog</button>
+    <div class="container__button">
+      <button id="button" class="button-random">Show Random Dog</button>
+    </div>
     <div class="container__img">
       <img src="" alt="" id="image">
-      <button id="button-save">Save</button>
+      <button id="button-save" class="hide">SAVE FAVORITE</button>
     </div>
   </main>
   <section>
-    <div class="container-local-storage"></div>
-    <button></button>
+    <h2 class="section__tittle">MIS IMAGENES FAVORITAS</h2>
+    <div class="container-local-storage" id="container-local-storage"></div>
   </section>
   <script type="module" src="./js/index.js"></script>
 </body>
