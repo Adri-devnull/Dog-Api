@@ -26,9 +26,14 @@ body {
   background-color: rgb(17, 17, 32);
 }
 
-.container {
+.main {
   display: flex;
   align-items: center;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
   justify-content: center;
   flex-direction: column;
   height: 100vh;
@@ -46,7 +51,6 @@ body {
   display: flex;
 }
 
-.container__img {
-  width: 200px;
-  height: 200px;
+.container-local-storage {
+  
 }

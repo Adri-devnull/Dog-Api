@@ -14,7 +14,7 @@
 const breedListElement = document.getElementById('breedList');
 const subBreedListElement = document.getElementById('subBreedList');
 const randomDogBtnElement = document.getElementById('button');
-const imageDogElement = document.getElementById('image');
+
 
 
 // FUNCION PARA PINTAR EL ERROR
@@ -43,23 +43,34 @@ const fillInOptions = async () => {
 
 fillInOptions();
 
-// FUNCION PARA RECIBIR LAS IMAGENES DE LA API
+// FUNCION PARA GUARDAR LA IMAGEN EN EL LS
+const saveImageLs = (number, imageUrls) => {
+    const savedImages = JSON.parse(localStorage.getItem('savedImages'));
+    savedImages.push(imageUrls[number]);
+    localStorage.setItem('savedImages', JSON.stringify(savedImages));
+    alert('Imagen guardada en el Local Storage');
+};
+
+// FUNCION PARA RECIBIR IMAGENES DE LA API
 const getImagesDog = async (breed) => {
     try {
-        const data = await fetchData('https://dog.ceo/api/breeds/image/random/50')
+        const data = await fetchData(`https://dog.ceo/api/breed/${breed}/images`);
         const imageUrls = data.message;
 
-        imageUrls.forEach(imageUrl => {
-            if (imageUrl.includes(breed)) {
-                console.log('contiene la raza', imageUrl);
-                imageDogElement.src = imageUrl;
-            }
-        });
+        const randomNumber = Math.floor(Math.random() * imageUrls.length);
+        const imageDogElement = document.getElementById('image');
+        imageDogElement.src = imageUrls[randomNumber];
 
+        const saveButton = document.getElementById('button-save');
+        saveButton.addEventListener('click', () => {
+            saveImageLs(randomNumber, imageUrls);
+        });
     } catch (error) {
-        printError(error)
+        printError(error);
     }
 };
+
+// FUNCION PARA CUANDO CARGUE LA PAGINA PINTAR LAS IMAGENES QUE ESTEN GUARDADAS EN EL LS
 
 
 // FUNCION PARA PINTAR LAS OPCIONES CON LAS RAZAS DE LA API
