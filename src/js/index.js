@@ -48,11 +48,9 @@ fillInOptions();
 // FUNCION PARA GUARDAR LA IMAGEN EN EL LS
 const saveImageLs = (number, imageUrls) => {
     let savedImages = JSON.parse(localStorage.getItem('savedImages'));
-
-    if (!Array.isArray(savedImages)) {
-        savedImages = []; // Si no hay datos, crea un nuevo array vacío
+    if (!savedImages) {
+        savedImages = [];
     }
-
     savedImages.push(imageUrls[number]);
     localStorage.setItem('savedImages', JSON.stringify(savedImages));
 };
@@ -91,20 +89,34 @@ const getImagesDog = async (breed, subbreed) => {
     buttonSaveElement.classList.add('show');
 };
 
-// FUNCION PARA CUANDO CARGUE LA PAGINA PINTAR LAS IMAGENES QUE ESTEN GUARDADAS EN EL LS
+// FUNCION PARA CUANDO CARGUE LA PAGINA PINTAR LAS IMAGENES QUE ESTEN GUARDADAS EN EL LS 
 const getImagesLs = () => {
     const lsImages = JSON.parse(localStorage.getItem('savedImages'));
-    lsImages.forEach(image => {
+    if (!lsImages || lsImages.length === 0) {
+        return;
+    }
+
+    lsImages.forEach((image, index) => {
+        const imageContainerElement = document.createElement('div');
         const img = document.createElement('img');
         const button = document.createElement('button');
         button.textContent = 'X';
         img.src = image;
-        img.append(button)
-        containerLsImagesElement.append(img);
-    })
+        button.addEventListener('click', () => {
+            lsImages.splice(index, 1);
+            localStorage.setItem('savedImages', JSON.stringify(lsImages));
+            imageContainerElement.remove();
+        });
+
+        imageContainerElement.append(img);
+        imageContainerElement.append(button);
+        containerLsImagesElement.append(imageContainerElement);
+    });
 }
+
+
 // LLAMADA A LA FUNCION PARA MOSTRAR IMAGENES FAVORITAS GUARDADAS EN EL LS
-getImagesLs();
+getImagesLs()
 
 
 // FUNCION PARA PINTAR LAS OPCIONES CON LAS RAZAS DE LA API
