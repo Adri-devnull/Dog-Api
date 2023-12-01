@@ -1,15 +1,3 @@
-// Crea un select vacío en tu HTML 
-// Rellena las opciones con una petición de razas a la API
-// Si la raza tiene subrazas, deberá aparecer un segundo select con la lista de subrazas.
-// En el caso de que sólo tenga una subraza, aparecerá directamente seleccionada en el segundo select, si tuviera más de una subraza en el select aparecerá como primera opción "seleccione una subraza" y al desplegar veremos el resto de subrazas.
-
-
-// Añade un botón en el HTML que te permita generar una foto random de un perro de la raza que hayas seleccionado.
-// Añade un botón a cada imagen que te permita guardarla como favorita en el LocalStorage
-// Las
-// imágenes favoritas siempre se mostrarán en la web y tendrán un botón de
-// "quitar favorito" lo cual la eliminará del LocalStorage
-
 // ELEMENTOS DEL DOM
 const breedListElement = document.getElementById('breedList');
 const subBreedListElement = document.getElementById('subBreedList');
@@ -45,14 +33,32 @@ const fillInOptions = async () => {
 // LLAMADA A LA FUNCION PARA MOSTRAR SELECT CON LAS RAZAS DISPONIBLES
 fillInOptions();
 
-// FUNCION PARA GUARDAR LA IMAGEN EN EL LS
+// FUNCION PARA GUARDAR LA IMAGEN EN EL LS Y PINTARLA O ELIMINARLA EN EL CONTAINER DE FAVORITAS
 const saveImageLs = (number, imageUrls) => {
-    let savedImages = JSON.parse(localStorage.getItem('savedImages'));
-    if (!savedImages) {
-        savedImages = [];
+    const savedImages = JSON.parse(localStorage.getItem('savedImages')) || [];
+    const imageUrlToAdd = imageUrls[number];
+    const imageExists = savedImages.some(image => image === imageUrlToAdd);
+
+    if (!imageExists) {
+        savedImages.push(imageUrlToAdd);
+        localStorage.setItem('savedImages', JSON.stringify(savedImages));
+        const imageContainerElement = document.createElement('div');
+        imageContainerElement.classList.add('fav-images');
+        const img = document.createElement('img');
+        const button = document.createElement('button');
+        button.classList.add('fav-btn');
+        button.textContent = 'Quitar de favoritos';
+        img.src = imageUrlToAdd;
+        button.addEventListener('click', () => {
+            savedImages.splice(savedImages.indexOf(imageUrlToAdd), 1);
+            localStorage.setItem('savedImages', JSON.stringify(savedImages));
+            imageContainerElement.remove();
+        });
+
+        imageContainerElement.append(img);
+        imageContainerElement.append(button);
+        containerLsImagesElement.append(imageContainerElement);
     }
-    savedImages.push(imageUrls[number]);
-    localStorage.setItem('savedImages', JSON.stringify(savedImages));
 };
 
 
@@ -88,36 +94,6 @@ const getImagesDog = async (breed, subbreed) => {
     buttonSaveElement.classList.remove('hide');
     buttonSaveElement.classList.add('show');
 };
-
-// FUNCION PARA CUANDO CARGUE LA PAGINA PINTAR LAS IMAGENES QUE ESTEN GUARDADAS EN EL LS 
-const getImagesLs = () => {
-    const lsImages = JSON.parse(localStorage.getItem('savedImages'));
-    if (!lsImages || lsImages.length === 0) {
-        return;
-    }
-
-    lsImages.forEach((image, index) => {
-        const imageContainerElement = document.createElement('div');
-        const img = document.createElement('img');
-        const button = document.createElement('button');
-        button.textContent = 'X';
-        img.src = image;
-        button.addEventListener('click', () => {
-            lsImages.splice(index, 1);
-            localStorage.setItem('savedImages', JSON.stringify(lsImages));
-            imageContainerElement.remove();
-        });
-
-        imageContainerElement.append(img);
-        imageContainerElement.append(button);
-        containerLsImagesElement.append(imageContainerElement);
-    });
-}
-
-
-// LLAMADA A LA FUNCION PARA MOSTRAR IMAGENES FAVORITAS GUARDADAS EN EL LS
-getImagesLs()
-
 
 // FUNCION PARA PINTAR LAS OPCIONES CON LAS RAZAS DE LA API
 const fillInBreeds = (data) => {
@@ -169,7 +145,7 @@ const fillInBreeds = (data) => {
 
 };
 
-// LLAMAMOS AL EVENTO DE ESCUCHA PARA PINTAR LA IMAGEN
+// LLAMAMOS AL EVENTO DE ESCUCHA PARA PINTAR LA IMAGEN DEPENDIENDO DE LA RAZA SELECCIONADA
 randomDogBtnElement.addEventListener('click', () => {
     const selectedBreed = breedListElement.value;
     const selectedSubBreed = subBreedListElement.value;
